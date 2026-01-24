@@ -57,12 +57,33 @@ export const storageService = {
 
   // Document Management
   getDocuments: (): DocumentItem[] => {
-    const data = localStorage.getItem(DOCS_STORAGE_KEY);
+    let data = localStorage.getItem(DOCS_STORAGE_KEY);
     if (!data) {
+      // Check for old storage key and migrate
+      const oldKey = 'ise_bir_bax_docs';
+      const oldData = localStorage.getItem(oldKey);
+      if (oldData) {
+        try {
+          const parsedOldData = JSON.parse(oldData);
+          // Migrate to new key
+          localStorage.setItem(DOCS_STORAGE_KEY, oldData);
+          localStorage.removeItem(oldKey);
+          return parsedOldData;
+        } catch (e) {
+          // If old data is corrupted, fall back to initial
+        }
+      }
+      // No data found, initialize with initial docs
       localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
       return initialDocs;
     }
-    return JSON.parse(data);
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      // If data is corrupted, reset to initial
+      localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
+      return initialDocs;
+    }
   },
 
   getVisibleDocuments: (): DocumentItem[] => {
