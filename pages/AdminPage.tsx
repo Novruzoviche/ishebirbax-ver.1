@@ -29,6 +29,7 @@ const AdminPage: React.FC = () => {
   // Service Form States
   const [sTitle, setSTitle] = useState('');
   const [sDescription, setSDescription] = useState('');
+  const [sImageUrl, setSImageUrl] = useState('');
   const [sHighlights, setSHighlights] = useState(''); 
   
   // Settings States
@@ -127,7 +128,7 @@ const AdminPage: React.FC = () => {
 
   const handleServiceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!sTitle || !sDescription) return;
+    if (!sTitle || !sDescription || !sImageUrl) return;
 
     const highlightsArray = sHighlights.split(',').map(h => h.trim()).filter(h => h !== '');
 
@@ -135,6 +136,7 @@ const AdminPage: React.FC = () => {
       storageService.updateService(editingService.id, {
         title: sTitle,
         description: sDescription,
+        imageUrl: sImageUrl,
         highlights: highlightsArray
       });
       setSuccess('Xidmət yeniləndi!');
@@ -143,6 +145,7 @@ const AdminPage: React.FC = () => {
       storageService.addService({
         title: sTitle,
         description: sDescription,
+        imageUrl: sImageUrl,
         highlights: highlightsArray
       });
       setSuccess('Yeni xidmət əlavə edildi!');
@@ -151,6 +154,7 @@ const AdminPage: React.FC = () => {
     refreshData();
     setSTitle('');
     setSDescription('');
+    setSImageUrl('');
     setSHighlights('');
     setTimeout(() => setSuccess(''), 3000);
   };
@@ -168,6 +172,7 @@ const AdminPage: React.FC = () => {
     setEditingService(service);
     setSTitle(service.title);
     setSDescription(service.description);
+    setSImageUrl(service.imageUrl);
     setSHighlights(service.highlights.join(', '));
     setActiveTab('services');
   };
@@ -396,9 +401,10 @@ const AdminPage: React.FC = () => {
         <form onSubmit={handleServiceSubmit} className="space-y-6">
           <input type="text" value={sTitle} onChange={(e) => setSTitle(e.target.value)} placeholder="Xidmət Adı" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required />
           <textarea value={sDescription} onChange={(e) => setSDescription(e.target.value)} placeholder="Xidmət Təsviri..." rows={3} className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required></textarea>
+          <input type="url" value={sImageUrl} onChange={(e) => setSImageUrl(e.target.value)} placeholder="Şəkil URL" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required />
           <input type="text" value={sHighlights} onChange={(e) => setSHighlights(e.target.value)} placeholder="Özəlliklər (vergüllə ayırın: Laminasiya PULSUZ, Ucuz, ...)" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" />
           <button type="submit" className="bg-blue-600 text-white font-bold py-4 px-10 rounded-2xl hover:bg-blue-700 transition-all">{editingService ? 'Yenilə' : 'Xidmət Əlavə Et'}</button>
-          {editingService && <button type="button" onClick={() => { setEditingService(null); setSTitle(''); setSDescription(''); setSHighlights(''); }} className="ml-4 bg-gray-100 px-10 py-4 rounded-2xl font-bold">Ləğv Et</button>}
+          {editingService && <button type="button" onClick={() => { setEditingService(null); setSTitle(''); setSDescription(''); setSImageUrl(''); setSHighlights(''); }} className="ml-4 bg-gray-100 px-10 py-4 rounded-2xl font-bold">Ləğv Et</button>}
         </form>
       </div>
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
