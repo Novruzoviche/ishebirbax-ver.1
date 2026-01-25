@@ -59,30 +59,40 @@ export const storageService = {
 
   // Document Management
   getDocuments: (): DocumentItem[] => {
-    let data = localStorage.getItem(DOCS_STORAGE_KEY);
-    if (!data) {
-      // Check for old storage key and migrate
-      const oldKey = 'ise_bir_bax_docs';
-      const oldData = localStorage.getItem(oldKey);
-      if (oldData) {
-        try {
-          const parsedOldData = JSON.parse(oldData);
-          // Migrate to new key
-          localStorage.setItem(DOCS_STORAGE_KEY, oldData);
-          localStorage.removeItem(oldKey);
-          return parsedOldData;
-        } catch (e) {
-          // If old data is corrupted, fall back to initial
-        }
-      }
-      // No data found, initialize with initial docs
-      localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
-      return initialDocs;
-    }
     try {
-      return JSON.parse(data);
+      let data = localStorage.getItem(DOCS_STORAGE_KEY);
+      if (!data) {
+        // Check for old storage key and migrate
+        const oldKey = 'ise_bir_bax_docs';
+        const oldData = localStorage.getItem(oldKey);
+        if (oldData) {
+          try {
+            const parsedOldData = JSON.parse(oldData);
+            // Migrate to new key
+            localStorage.setItem(DOCS_STORAGE_KEY, oldData);
+            localStorage.removeItem(oldKey);
+            return parsedOldData;
+          } catch (e) {
+            // If old data is corrupted, fall back to initial
+          }
+        }
+        // No data found, initialize with initial docs
+        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
+        return initialDocs;
+      }
+      const parsedData = JSON.parse(data);
+      // Ensure all documents have required fields
+      const validData = parsedData.filter((doc: any) => 
+        doc && typeof doc === 'object' && doc.id && doc.title && doc.imageUrl
+      );
+      if (validData.length !== parsedData.length) {
+        // If some documents are invalid, save the valid ones
+        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(validData));
+        return validData;
+      }
+      return parsedData;
     } catch (e) {
-      // If data is corrupted, reset to initial
+      // If any error occurs, reset to initial
       localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
       return initialDocs;
     }
@@ -123,12 +133,28 @@ export const storageService = {
 
   // Service Management
   getServices: (): ServiceItem[] => {
-    const data = localStorage.getItem(SERVICES_STORAGE_KEY);
-    if (!data) {
+    try {
+      const data = localStorage.getItem(SERVICES_STORAGE_KEY);
+      if (!data) {
+        localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(initialServices));
+        return initialServices;
+      }
+      const parsedData = JSON.parse(data);
+      // Ensure all services have required fields
+      const validData = parsedData.filter((service: any) => 
+        service && typeof service === 'object' && service.id && service.title && service.description && service.imageUrl
+      );
+      if (validData.length !== parsedData.length) {
+        // If some services are invalid, save the valid ones
+        localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(validData));
+        return validData;
+      }
+      return parsedData;
+    } catch (e) {
+      // If any error occurs, reset to initial
       localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(initialServices));
       return initialServices;
     }
-    return JSON.parse(data);
   },
 
   addService: (service: Omit<ServiceItem, 'id' | 'createdAt'>): ServiceItem => {

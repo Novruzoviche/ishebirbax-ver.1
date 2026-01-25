@@ -31,93 +31,114 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     setDocs(storageService.getVisibleDocuments());
     setServices(storageService.getServices());
-    
-    // Initialize Glider.js for services slider
-    const initializeGlider = () => {
-      if (window.Glider && document.getElementById('services-glider')) {
-        const glider = new window.Glider(document.getElementById('services-glider')!, {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          draggable: true,
-          dots: '.glider-dots-services',
-          arrows: {
-            prev: '.glider-prev-services',
-            next: '.glider-next-services'
-          },
-          responsive: [
-            {
-              breakpoint: 768,
-              settings: {
-                slidesToShow: 2,
-                slidesToScroll: 1
-              }
-            },
-            {
-              breakpoint: 1024,
-              settings: {
-                slidesToShow: 3,
-                slidesToScroll: 1
-              }
-            }
-          ]
-        });
-
-        // Auto-scroll functionality for infinite loop
-        let autoScrollInterval: ReturnType<typeof setTimeout>;
-        
-        const startAutoScroll = () => {
-          autoScrollInterval = setInterval(() => {
-            const currentSlide = glider.slide || 0;
-            const totalSlides = services.length;
-            
-            if (currentSlide >= totalSlides - 1) {
-              // Reset to beginning when reaching the duplicated slides
-              glider.scrollItem(0, false);
-            } else {
-              glider.scrollItem(currentSlide + 1, true);
-            }
-          }, 3000); // Auto-scroll every 3 seconds
-        };
-
-        const stopAutoScroll = () => {
-          if (autoScrollInterval) {
-            clearInterval(autoScrollInterval);
-          }
-        };
-
-        // Start auto-scroll
-        startAutoScroll();
-
-        // Pause auto-scroll on hover
-        const gliderElement = document.getElementById('services-glider');
-        if (gliderElement) {
-          gliderElement.addEventListener('mouseenter', stopAutoScroll);
-          gliderElement.addEventListener('mouseleave', startAutoScroll);
-        }
-
-        // Pause on button interactions
-        const prevBtn = document.querySelector('.glider-prev-services');
-        const nextBtn = document.querySelector('.glider-next-services');
-        
-        if (prevBtn) {
-          prevBtn.addEventListener('click', () => {
-            stopAutoScroll();
-            setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
-          });
-        }
-        
-        if (nextBtn) {
-          nextBtn.addEventListener('click', () => {
-            stopAutoScroll();
-            setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
-          });
-        }
-      }
-    };
-    
-    // Initialize after a short delay to ensure DOM is ready
-    setTimeout(initializeGlider, 100);
   }, []);
+
+  // Separate useEffect for Glider.js initialization
+  useEffect(() => {
+    if (services.length > 0) {
+      // Initialize Glider.js for services slider
+      const initializeGlider = () => {
+        if (window.Glider && document.getElementById('services-glider')) {
+          try {
+            const glider = new window.Glider(document.getElementById('services-glider')!, {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              draggable: true,
+              dots: '.glider-dots-services',
+              arrows: {
+                prev: '.glider-prev-services',
+                next: '.glider-next-services'
+              },
+              responsive: [
+                {
+                  breakpoint: 768,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                  }
+                },
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1
+                  }
+                }
+              ]
+            });
+
+            // Auto-scroll functionality for infinite loop
+            let autoScrollInterval: ReturnType<typeof setTimeout>;
+            
+            const startAutoScroll = () => {
+              autoScrollInterval = setInterval(() => {
+                try {
+                  const currentSlide = glider.slide || 0;
+                  const originalSlidesCount = services.length;
+                  
+                  if (currentSlide >= originalSlidesCount - 1) {
+                    // Reset to beginning when reaching the end of original slides
+                    glider.scrollItem(0, false);
+                  } else {
+                    glider.scrollItem(currentSlide + 1, true);
+                  }
+                } catch (e) {
+                  // If glider operations fail, stop auto-scroll
+                  stopAutoScroll();
+                }
+              }, 3000); // Auto-scroll every 3 seconds
+            };
+
+            const stopAutoScroll = () => {
+              if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+              }
+            };
+
+            // Start auto-scroll
+            startAutoScroll();
+
+            // Pause auto-scroll on hover
+            const gliderElement = document.getElementById('services-glider');
+            if (gliderElement) {
+              gliderElement.addEventListener('mouseenter', stopAutoScroll);
+              gliderElement.addEventListener('mouseleave', startAutoScroll);
+              
+              // Also pause on touch for mobile
+              gliderElement.addEventListener('touchstart', stopAutoScroll);
+              gliderElement.addEventListener('touchend', () => {
+                setTimeout(startAutoScroll, 2000); // Resume after touch
+              });
+            }
+
+            // Pause on button interactions
+            const prevBtn = document.querySelector('.glider-prev-services');
+            const nextBtn = document.querySelector('.glider-next-services');
+            
+            if (prevBtn) {
+              prevBtn.addEventListener('click', () => {
+                stopAutoScroll();
+                setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
+              });
+            }
+            
+            if (nextBtn) {
+              nextBtn.addEventListener('click', () => {
+                stopAutoScroll();
+                setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
+              });
+            }
+          } catch (e) {
+            // If Glider.js fails to initialize, the slider will still show as a regular flex container
+            console.warn('Glider.js initialization failed, falling back to static layout');
+          }
+        }
+      };
+      
+      // Initialize after a short delay to ensure DOM is ready
+      setTimeout(initializeGlider, 100);
+    }
+  }, [services]); // Depend on services to re-initialize when they load
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -231,6 +252,32 @@ const HomePage: React.FC = () => {
         
         .glider {
           overflow: hidden;
+        }
+        
+        /* Fallback for when Glider.js is not available */
+        .glider:not(.glider-track) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 15px;
+          justify-content: center;
+        }
+        
+        .glider:not(.glider-track) .glider-slide {
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 350px;
+        }
+        
+        @media (min-width: 768px) {
+          .glider:not(.glider-track) .glider-slide {
+            width: calc(50% - 15px);
+          }
+        }
+        
+        @media (min-width: 1024px) {
+          .glider:not(.glider-track) .glider-slide {
+            width: calc(33.33% - 15px);
+          }
         }
         
         .glider-track {
