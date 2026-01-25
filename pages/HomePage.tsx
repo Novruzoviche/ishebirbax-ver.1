@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
     // Initialize Glider.js for services slider
     const initializeGlider = () => {
       if (window.Glider && document.getElementById('services-glider')) {
-        new window.Glider(document.getElementById('services-glider')!, {
+        const glider = new window.Glider(document.getElementById('services-glider')!, {
           slidesToShow: 1,
           slidesToScroll: 1,
           draggable: true,
@@ -61,6 +61,57 @@ const HomePage: React.FC = () => {
             }
           ]
         });
+
+        // Auto-scroll functionality for infinite loop
+        let autoScrollInterval: NodeJS.Timeout;
+        
+        const startAutoScroll = () => {
+          autoScrollInterval = setInterval(() => {
+            const currentSlide = glider.slide || 0;
+            const totalSlides = services.length;
+            
+            if (currentSlide >= totalSlides - 1) {
+              // Reset to beginning when reaching the duplicated slides
+              glider.scrollItem(0, false);
+            } else {
+              glider.scrollItem(currentSlide + 1, true);
+            }
+          }, 3000); // Auto-scroll every 3 seconds
+        };
+
+        const stopAutoScroll = () => {
+          if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+          }
+        };
+
+        // Start auto-scroll
+        startAutoScroll();
+
+        // Pause auto-scroll on hover
+        const gliderElement = document.getElementById('services-glider');
+        if (gliderElement) {
+          gliderElement.addEventListener('mouseenter', stopAutoScroll);
+          gliderElement.addEventListener('mouseleave', startAutoScroll);
+        }
+
+        // Pause on button interactions
+        const prevBtn = document.querySelector('.glider-prev-services');
+        const nextBtn = document.querySelector('.glider-next-services');
+        
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
+          });
+        }
+        
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            setTimeout(startAutoScroll, 5000); // Resume after 5 seconds
+          });
+        }
       }
     };
     
@@ -106,8 +157,9 @@ const HomePage: React.FC = () => {
             
             <div className="glider-contain">
               <div className="glider" id="services-glider">
-                {services.map((service) => (
-                  <div key={service.id} className="glider-slide service-card">
+                {/* Duplicate slides for infinite loop effect */}
+                {services.concat(services).map((service, index) => (
+                  <div key={`${service.id}-${index}`} className="glider-slide service-card">
                     <div className="bg-gray-50 rounded-2xl p-6 h-full flex flex-col">
                       <img 
                         src={service.imageUrl} 
@@ -172,7 +224,7 @@ const HomePage: React.FC = () => {
       </main>
 
       <style>{`
-        /* Glider.js Perspective View Styles */
+        /* Glider.js Clean Carousel Styles */
         .glider-contain {
           position: relative;
         }
@@ -183,15 +235,12 @@ const HomePage: React.FC = () => {
         
         .glider-track {
           display: flex;
-          transform-style: preserve-3d;
-          perspective: 1000px;
         }
         
         .glider-slide {
           flex: 0 0 auto;
           padding: 0 15px;
-          transform-style: preserve-3d;
-          transition: transform 0.3s ease, opacity 0.3s ease;
+          transition: transform 0.3s ease;
         }
         
         .glider-slide.service-card {
@@ -199,29 +248,11 @@ const HomePage: React.FC = () => {
           max-width: 350px;
         }
         
-        /* Perspective View Effect */
-        .glider-slide:nth-child(1) {
-          transform: scale(1) translateZ(0px);
-          opacity: 1;
-          z-index: 3;
-        }
-        
-        .glider-slide:nth-child(2) {
-          transform: scale(0.9) translateZ(-50px) translateX(20px);
-          opacity: 0.7;
-          z-index: 2;
-        }
-        
-        .glider-slide:nth-child(3) {
-          transform: scale(0.8) translateZ(-100px) translateX(40px);
-          opacity: 0.5;
-          z-index: 1;
-        }
-        
-        .glider-slide:nth-child(4) {
-          transform: scale(0.7) translateZ(-150px) translateX(60px);
-          opacity: 0.3;
-          z-index: 0;
+        /* All slides are equally bright and sharp */
+        .glider-slide {
+          opacity: 1 !important;
+          transform: scale(1) !important;
+          filter: none !important;
         }
         
         /* Navigation buttons */
