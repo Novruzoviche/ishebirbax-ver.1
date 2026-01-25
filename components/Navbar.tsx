@@ -48,10 +48,8 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
-            {/* Radio Player - Hidden on very small screens */}
-            <div className="hidden sm:block">
-              <RadioPlayer />
-            </div>
+            {/* Radio Player - Always visible */}
+            <RadioPlayer />
 
             {/* Social Icons - Hidden on very small screens */}
             <div className="hidden sm:flex items-center space-x-2 sm:space-x-3">
