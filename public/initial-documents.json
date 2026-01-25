@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "title": "Bakı Dövlət Universiteti - Bakalavr",
+    "description": "İnformasiya Texnologiyaları üzrə fərqlənmə diplomu.",
+    "imageUrl": "https://picsum.photos/seed/diploma1/800/600",
+    "category": "DIPLOMA",
+    "status": "VISIBLE",
+    "createdAt": 1640995200000
+  },
+  {
+    "id": "2",
+    "title": "Google Data Analytics Professional",
+    "description": "Data analitikası üzrə beynəlxalq dərəcəli sertifikat.",
+    "imageUrl": "https://picsum.photos/seed/cert1/800/600",
+    "category": "CERTIFICATE",
+    "status": "VISIBLE",
+    "createdAt": 1640995200000
+  }
+]

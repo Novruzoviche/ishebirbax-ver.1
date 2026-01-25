@@ -46,13 +46,59 @@ const AdminPage: React.FC = () => {
     }
   }, []);
 
-  const refreshData = () => {
-    setDocs(storageService.getDocuments());
-    setServices(storageService.getServices());
-    setMessages(storageService.getMessages());
-    const creds = storageService.getAdminCreds();
-    setNewUsername(creds.username);
-    setNewPassword(creds.password);
+  const refreshData = async () => {
+    try {
+      // Load initial data if not already in localStorage
+      const currentDocs = storageService.getDocuments();
+      const currentServices = storageService.getServices();
+
+      if (currentDocs.length === 0) {
+        const initialDocs = await storageService.loadInitialDocuments();
+        // Save initial docs to localStorage so admin can manage them
+        initialDocs.forEach(doc => {
+          if (!currentDocs.find(d => d.id === doc.id)) {
+            storageService.addDocument({
+              title: doc.title,
+              description: doc.description,
+              imageUrl: doc.imageUrl,
+              category: doc.category
+            });
+          }
+        });
+      }
+
+      if (currentServices.length === 0) {
+        const initialServices = await storageService.loadInitialServices();
+        // Save initial services to localStorage so admin can manage them
+        initialServices.forEach(service => {
+          if (!currentServices.find(s => s.id === service.id)) {
+            storageService.addService({
+              title: service.title,
+              description: service.description,
+              imageUrl: service.imageUrl,
+              highlights: service.highlights
+            });
+          }
+        });
+      }
+
+      // Now load all data including newly saved initial data
+      setDocs(storageService.getDocuments());
+      setServices(storageService.getServices());
+      setMessages(storageService.getMessages());
+      const creds = storageService.getAdminCreds();
+      setNewUsername(creds.username);
+      setNewPassword(creds.password);
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+      // Fallback
+      setDocs(storageService.getDocuments());
+      setServices(storageService.getServices());
+      setMessages(storageService.getMessages());
+      const creds = storageService.getAdminCreds();
+      setNewUsername(creds.username);
+      setNewPassword(creds.password);
+    }
   };
 
   const handleLogin = (e: React.FormEvent) => {

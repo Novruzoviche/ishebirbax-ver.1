@@ -6,45 +6,53 @@ const SERVICES_STORAGE_KEY = 'ise_bir_bax_services_v1';
 const MESSAGES_STORAGE_KEY = 'ise_bir_bax_messages_v1';
 const ADMIN_CREDS_KEY = 'ise_bir_bax_admin_creds_v1';
 
-const initialDocs: DocumentItem[] = [
-  {
-    id: '1',
-    title: 'Bakı Dövlət Universiteti - Bakalavr',
-    description: 'İnformasiya Texnologiyaları üzrə fərqlənmə diplomu.',
-    imageUrl: 'https://picsum.photos/seed/diploma1/800/600',
-    category: Category.DIPLOMA,
-    status: ItemStatus.VISIBLE,
-    createdAt: Date.now() - 1000000
-  },
-  {
-    id: '2',
-    title: 'Google Data Analytics Professional',
-    description: 'Data analitikası üzrə beynəlxalq dərəcəli sertifikat.',
-    imageUrl: 'https://picsum.photos/seed/cert1/800/600',
-    category: Category.CERTIFICATE,
-    status: ItemStatus.VISIBLE,
-    createdAt: Date.now() - 500000
-  }
-];
+// Cache for initial data
+let initialDocumentsCache: DocumentItem[] | null = null;
+let initialServicesCache: ServiceItem[] | null = null;
 
-const initialServices: ServiceItem[] = [
-  {
-    id: 's1',
-    title: 'Diplom Çapı',
-    description: 'Yüksək keyfiyyətli kağızlarda diplomların peşəkar çapı.',
-    imageUrl: 'https://picsum.photos/seed/diploma-print/800/600',
-    highlights: ['Laminasiya PULSUZ', 'Yüksək Keyfiyy'],
-    createdAt: Date.now()
-  },
-  {
-    id: 's2',
-    title: 'Sertifikat Çapı',
-    description: 'Beynəlxalq standartlara uyğun sertifikatların dizaynı və çapı.',
-    imageUrl: 'https://picsum.photos/seed/certificate-print/800/600',
-    highlights: ['Sürətli Çatdırılma', 'Xüsusi Dizayn'],
-    createdAt: Date.now()
+// Load initial data from static files
+const loadInitialDocuments = async (): Promise<DocumentItem[]> => {
+  try {
+    const response = await fetch('/initial-documents.json');
+    if (!response.ok) throw new Error('Failed to load initial documents');
+    const data = await response.json();
+    return data.map((doc: any) => ({
+      ...doc,
+      category: doc.category as Category,
+      status: doc.status as ItemStatus
+    }));
+  } catch (error) {
+    console.error('Error loading initial documents:', error);
+    return [];
   }
-];
+};
+
+const loadInitialServices = async (): Promise<ServiceItem[]> => {
+  try {
+    const response = await fetch('/initial-services.json');
+    if (!response.ok) throw new Error('Failed to load initial services');
+    return await response.json();
+  } catch (error) {
+    console.error('Error loading initial services:', error);
+    return [];
+  }
+};
+
+// Get cached initial documents
+const getInitialDocuments = async (): Promise<DocumentItem[]> => {
+  if (initialDocumentsCache === null) {
+    initialDocumentsCache = await loadInitialDocuments();
+  }
+  return initialDocumentsCache;
+};
+
+// Get cached initial services
+const getInitialServices = async (): Promise<ServiceItem[]> => {
+  if (initialServicesCache === null) {
+    initialServicesCache = await loadInitialServices();
+  }
+  return initialServicesCache;
+};
 
 export const storageService = {
   // Admin Credentials
@@ -76,13 +84,14 @@ export const storageService = {
             // If old data is corrupted, fall back to initial
           }
         }
-        // No data found, initialize with initial docs
-        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
-        return initialDocs;
+        // No data found, try to load from static file synchronously
+        // For now, return empty array and let components handle loading
+        // This will be improved with proper async handling
+        return [];
       }
       const parsedData = JSON.parse(data);
       // Ensure all documents have required fields
-      const validData = parsedData.filter((doc: any) => 
+      const validData = parsedData.filter((doc: any) =>
         doc && typeof doc === 'object' && doc.id && doc.title && doc.imageUrl
       );
       if (validData.length !== parsedData.length) {
@@ -93,8 +102,7 @@ export const storageService = {
       return parsedData;
     } catch (e) {
       // If any error occurs, reset to initial
-      localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(initialDocs));
-      return initialDocs;
+      return [];
     }
   },
 
@@ -136,12 +144,13 @@ export const storageService = {
     try {
       const data = localStorage.getItem(SERVICES_STORAGE_KEY);
       if (!data) {
-        localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(initialServices));
-        return initialServices;
+        // No data found, return empty array for now
+        // Initial data will be loaded asynchronously by components
+        return [];
       }
       const parsedData = JSON.parse(data);
       // Ensure all services have required fields
-      const validData = parsedData.filter((service: any) => 
+      const validData = parsedData.filter((service: any) =>
         service && typeof service === 'object' && service.id && service.title && service.description && service.imageUrl
       );
       if (validData.length !== parsedData.length) {
@@ -151,9 +160,8 @@ export const storageService = {
       }
       return parsedData;
     } catch (e) {
-      // If any error occurs, reset to initial
-      localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(initialServices));
-      return initialServices;
+      // If any error occurs, return empty array
+      return [];
     }
   },
 
@@ -179,6 +187,15 @@ export const storageService = {
     const services = storageService.getServices();
     const updated = services.filter(s => s.id !== id);
     localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(updated));
+  },
+
+  // Async methods for loading initial data
+  loadInitialDocuments: async (): Promise<DocumentItem[]> => {
+    return await getInitialDocuments();
+  },
+
+  loadInitialServices: async (): Promise<ServiceItem[]> => {
+    return await getInitialServices();
   },
 
   // Message Management
