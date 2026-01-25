@@ -30,6 +30,7 @@ export interface ServiceItem {
   id: string;
   title: string;
   description: string;
+  imageUrl: string;
   highlights: string[]; // e.g. ["Laminasiya PULSUZ", "Ucuz qiymət"]
   createdAt: number;
 }

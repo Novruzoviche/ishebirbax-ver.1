@@ -32,6 +32,7 @@ const initialServices: ServiceItem[] = [
     id: 's1',
     title: 'Diplom Çapı',
     description: 'Yüksək keyfiyyətli kağızlarda diplomların peşəkar çapı.',
+    imageUrl: 'https://picsum.photos/seed/diploma-print/800/600',
     highlights: ['Laminasiya PULSUZ', 'Yüksək Keyfiyy'],
     createdAt: Date.now()
   },
@@ -39,6 +40,7 @@ const initialServices: ServiceItem[] = [
     id: 's2',
     title: 'Sertifikat Çapı',
     description: 'Beynəlxalq standartlara uyğun sertifikatların dizaynı və çapı.',
+    imageUrl: 'https://picsum.photos/seed/certificate-print/800/600',
     highlights: ['Sürətli Çatdırılma', 'Xüsusi Dizayn'],
     createdAt: Date.now()
   }
