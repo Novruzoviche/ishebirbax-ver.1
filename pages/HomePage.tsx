@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
         });
 
         // Auto-scroll functionality for infinite loop
-        let autoScrollInterval: NodeJS.Timeout;
+        let autoScrollInterval: ReturnType<typeof setTimeout>;
         
         const startAutoScroll = () => {
           autoScrollInterval = setInterval(() => {
