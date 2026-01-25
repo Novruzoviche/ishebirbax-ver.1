@@ -22,7 +22,8 @@ const Navbar: React.FC = () => {
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center gap-3">
+            <img src="https://i.imgur.com/OxQvC6p.jpg" alt="İşə Bir Bax Logo" className="h-10 w-10 rounded" />
             <Link to="/" className="text-2xl font-bold text-blue-600 tracking-tight">
               İşə Bir Bax
             </Link>
