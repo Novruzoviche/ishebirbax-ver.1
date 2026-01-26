@@ -22,16 +22,17 @@ const Navbar: React.FC = () => {
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-3">
-            <img src="https://i.imgur.com/OxQvC6p.jpg" alt="İşə Bir Bax Logo" className="h-10 w-10 rounded" />
-            <Link to="/" className="text-2xl font-bold text-blue-600 tracking-tight">
-              İşə Bir Bax
+          <div className="flex items-center gap-2 sm:gap-3">
+            <img src="https://i.imgur.com/OxQvC6p.jpg" alt="İşə Bir Bax Logo" className="h-8 w-8 sm:h-10 sm:w-10 rounded" />
+            <Link to="/" className="text-xl sm:text-2xl font-bold text-blue-600 tracking-tight">
+              <span className="hidden sm:inline">İşə Bir Bax</span>
+              <span className="sm:hidden">İşə Bax</span>
             </Link>
           </div>
           
-          <div className="flex items-center space-x-3 sm:space-x-6">
+          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-6">
             {/* Desktop Links */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -50,28 +51,31 @@ const Navbar: React.FC = () => {
             {/* Radio Player - Always visible */}
             <RadioPlayer />
 
-            {/* Instagram Icon */}
-            <a href="https://www.instagram.com/ishebirbax" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="m16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </a>
+            {/* Social Icons - Hidden on very small screens */}
+            <div className="hidden sm:flex items-center space-x-2 sm:space-x-3">
+              {/* Instagram Icon */}
+              <a href="https://www.instagram.com/ishebirbax" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="m16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
 
-            {/* TikTok Icon */}
-            <a href="https://www.tiktok.com/@ishebirbax" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z" />
-              </svg>
-            </a>
+              {/* TikTok Icon */}
+              <a href="https://www.tiktok.com/@ishebirbax" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z" />
+                </svg>
+              </a>
 
-            {/* Telegram Icon */}
-            <a href="https://web.telegram.org/k/#@ishebirbaxchannel" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-              </svg>
-            </a>
+              {/* Telegram Icon */}
+              <a href="https://web.telegram.org/k/#@ishebirbaxchannel" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-500 transition-colors">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              </a>
+            </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center">

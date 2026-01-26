@@ -7,7 +7,28 @@ const ServicesPage: React.FC = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
 
   useEffect(() => {
-    setServices(storageService.getServices());
+    const loadData = async () => {
+      try {
+        // Load initial data from static files
+        const initialServices = await storageService.loadInitialServices();
+
+        // Get any user-added data from localStorage
+        const localServices = storageService.getServices();
+
+        // Merge initial data with localStorage data
+        const allServices = [...initialServices, ...localServices].filter((service, index, self) =>
+          index === self.findIndex(s => s.id === service.id)
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error('Error loading services:', error);
+        // Fallback to localStorage only
+        setServices(storageService.getServices());
+      }
+    };
+
+    loadData();
   }, []);
 
   return (

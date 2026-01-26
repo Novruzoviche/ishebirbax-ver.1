@@ -13,8 +13,30 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ category, title }) => {
   const [docs, setDocs] = useState<DocumentItem[]>([]);
 
   useEffect(() => {
-    const visibleDocs = storageService.getVisibleDocuments();
-    setDocs(visibleDocs.filter(d => d.category === category));
+    const loadData = async () => {
+      try {
+        // Load initial data from static files
+        const initialDocs = await storageService.loadInitialDocuments();
+
+        // Get any user-added data from localStorage
+        const localDocs = storageService.getVisibleDocuments();
+
+        // Merge initial data with localStorage data
+        const allDocs = [...initialDocs, ...localDocs].filter((doc, index, self) =>
+          index === self.findIndex(d => d.id === doc.id)
+        );
+
+        // Filter by category
+        setDocs(allDocs.filter(d => d.category === category));
+      } catch (error) {
+        console.error('Error loading documents:', error);
+        // Fallback to localStorage only
+        const visibleDocs = storageService.getVisibleDocuments();
+        setDocs(visibleDocs.filter(d => d.category === category));
+      }
+    };
+
+    loadData();
   }, [category]);
 
   return (
