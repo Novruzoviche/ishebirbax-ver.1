@@ -1,0 +1,18 @@
+[
+  {
+    "id": "s1",
+    "title": "Diplom Çapı",
+    "description": "Yüksək keyfiyyətli kağızlarda diplomların peşəkar çapı.",
+    "imageUrl": "https://picsum.photos/seed/diploma-print/800/600",
+    "highlights": ["Laminasiya PULSUZ", "Yüksək Keyfiyy"],
+    "createdAt": 1640995200000
+  },
+  {
+    "id": "s2",
+    "title": "Sertifikat Çapı",
+    "description": "Beynəlxalq standartlara uyğun sertifikatların dizaynı və çapı.",
+    "imageUrl": "https://picsum.photos/seed/certificate-print/800/600",
+    "highlights": ["Sürətli Çatdırılma", "Xüsusi Dizayn"],
+    "createdAt": 1640995200000
+  }
+]
