@@ -38,6 +38,8 @@ const AdminPage: React.FC = () => {
   
   const [success, setSuccess] = useState('');
 
+  const [formError, setFormError] = useState('');
+
   useEffect(() => {
     const session = sessionStorage.getItem('admin_session');
     if (session === 'active') {
@@ -125,55 +127,67 @@ const AdminPage: React.FC = () => {
     e.preventDefault();
     if (!title || !imageUrl) return;
 
-    if (editingDoc) {
-      await storageService.updateDocument(editingDoc.id, { title, description, imageUrl, category });
-      setSuccess('Sənəd yeniləndi!');
-      setEditingDoc(null);
-      setActiveTab('manage');
-    } else {
-      await storageService.addDocument({ title, description, imageUrl, category });
-      setSuccess('Yeni sənəd əlavə edildi!');
-    }
+    try {
+      if (editingDoc) {
+        await storageService.updateDocument(editingDoc.id, { title, description, imageUrl, category });
+        setSuccess('Sənəd yeniləndi!');
+        setEditingDoc(null);
+        setActiveTab('manage');
+      } else {
+        await storageService.addDocument({ title, description, imageUrl, category });
+        setSuccess('Yeni sənəd əlavə edildi!');
+      }
 
-    await refreshData();
-    setTitle('');
-    setDescription('');
-    setImageUrl('');
-    setCategory(Category.DIPLOMA);
-    setTimeout(() => setSuccess(''), 3000);
+      await refreshData();
+      setTitle('');
+      setDescription('');
+      setImageUrl('');
+      setCategory(Category.DIPLOMA);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      console.error('Error submitting document:', error);
+      setFormError('Sənəd əlavə edilərkən xəta baş verdi. Yenidən cəhd edin.');
+      setTimeout(() => setFormError(''), 3000);
+    }
   };
 
   const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sTitle || !sDescription || !sImageUrl) return;
 
-    const highlightsArray = sHighlights.split(',').map(h => h.trim()).filter(h => h !== '');
+    try {
+      const highlightsArray = sHighlights.split(',').map(h => h.trim()).filter(h => h !== '');
 
-    if (editingService) {
-      await storageService.updateService(editingService.id, {
-        title: sTitle,
-        description: sDescription,
-        imageUrl: sImageUrl,
-        highlights: highlightsArray
-      });
-      setSuccess('Xidmət yeniləndi!');
-      setEditingService(null);
-    } else {
-      await storageService.addService({
-        title: sTitle,
-        description: sDescription,
-        imageUrl: sImageUrl,
-        highlights: highlightsArray
-      });
-      setSuccess('Yeni xidmət əlavə edildi!');
+      if (editingService) {
+        await storageService.updateService(editingService.id, {
+          title: sTitle,
+          description: sDescription,
+          imageUrl: sImageUrl,
+          highlights: highlightsArray
+        });
+        setSuccess('Xidmət yeniləndi!');
+        setEditingService(null);
+      } else {
+        await storageService.addService({
+          title: sTitle,
+          description: sDescription,
+          imageUrl: sImageUrl,
+          highlights: highlightsArray
+        });
+        setSuccess('Yeni xidmət əlavə edildi!');
+      }
+
+      await refreshData();
+      setSTitle('');
+      setSDescription('');
+      setSImageUrl('');
+      setSHighlights('');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      console.error('Error submitting service:', error);
+      setFormError('Xidmət əlavə edilərkən xəta baş verdi. Yenidən cəhd edin.');
+      setTimeout(() => setFormError(''), 3000);
     }
-
-    await refreshData();
-    setSTitle('');
-    setSDescription('');
-    setSImageUrl('');
-    setSHighlights('');
-    setTimeout(() => setSuccess(''), 3000);
   };
 
   const handleEditDoc = (doc: DocumentItem) => {
@@ -403,6 +417,7 @@ const AdminPage: React.FC = () => {
         <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Şəkil URL" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required />
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Təsvir..." rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"></textarea>
         {success && <div className="text-emerald-600 font-bold">{success}</div>}
+        {formError && <div className="text-red-600 font-bold">{formError}</div>}
         <div className="flex gap-4">
           <button type="submit" className="bg-blue-600 text-white font-bold py-4 px-10 rounded-2xl hover:bg-blue-700 transition-all">{editingDoc ? 'Yenilə' : 'Əlavə Et'}</button>
           {editingDoc && <button type="button" onClick={() => { setEditingDoc(null); setActiveTab('manage'); }} className="bg-gray-100 px-10 rounded-2xl font-bold">Ləğv Et</button>}
@@ -420,6 +435,8 @@ const AdminPage: React.FC = () => {
           <textarea value={sDescription} onChange={(e) => setSDescription(e.target.value)} placeholder="Xidmət Təsviri..." rows={3} className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required></textarea>
           <input type="url" value={sImageUrl} onChange={(e) => setSImageUrl(e.target.value)} placeholder="Şəkil URL" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" required />
           <input type="text" value={sHighlights} onChange={(e) => setSHighlights(e.target.value)} placeholder="Özəlliklər (vergüllə ayırın: Laminasiya PULSUZ, Ucuz, ...)" className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" />
+          {success && <div className="text-emerald-600 font-bold">{success}</div>}
+          {formError && <div className="text-red-600 font-bold">{formError}</div>}
           <button type="submit" className="bg-blue-600 text-white font-bold py-4 px-10 rounded-2xl hover:bg-blue-700 transition-all">{editingService ? 'Yenilə' : 'Xidmət Əlavə Et'}</button>
           {editingService && <button type="button" onClick={() => { setEditingService(null); setSTitle(''); setSDescription(''); setSImageUrl(''); setSHighlights(''); }} className="ml-4 bg-gray-100 px-10 py-4 rounded-2xl font-bold">Ləğv Et</button>}
         </form>
