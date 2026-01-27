@@ -7,19 +7,22 @@ const ContactPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
     setIsSubmitting(true);
-    // Artificial delay to simulate network
-    setTimeout(() => {
-      storageService.addMessage(formData);
+    try {
+      await storageService.addMessage(formData);
       setIsSubmitting(false);
       setShowSuccess(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTimeout(() => setShowSuccess(false), 5000);
-    }, 800);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setIsSubmitting(false);
+      // Show error message if needed
+    }
   };
 
   return (

@@ -48,66 +48,37 @@ const AdminPage: React.FC = () => {
 
   const refreshData = async () => {
     try {
-      // Load initial data if not already in localStorage
-      const currentDocs = storageService.getDocuments();
-      const currentServices = storageService.getServices();
+      // Load all data from Firestore
+      const [docsData, servicesData, messagesData, creds] = await Promise.all([
+        storageService.getDocuments(),
+        storageService.getServices(),
+        storageService.getMessages(),
+        storageService.getAdminCreds()
+      ]);
 
-      if (currentDocs.length === 0) {
-        const initialDocs = await storageService.loadInitialDocuments();
-        // Save initial docs to localStorage so admin can manage them
-        initialDocs.forEach(doc => {
-          if (!currentDocs.find(d => d.id === doc.id)) {
-            storageService.addDocument({
-              title: doc.title,
-              description: doc.description,
-              imageUrl: doc.imageUrl,
-              category: doc.category
-            });
-          }
-        });
-      }
-
-      if (currentServices.length === 0) {
-        const initialServices = await storageService.loadInitialServices();
-        // Save initial services to localStorage so admin can manage them
-        initialServices.forEach(service => {
-          if (!currentServices.find(s => s.id === service.id)) {
-            storageService.addService({
-              title: service.title,
-              description: service.description,
-              imageUrl: service.imageUrl,
-              highlights: service.highlights
-            });
-          }
-        });
-      }
-
-      // Now load all data including newly saved initial data
-      setDocs(storageService.getDocuments());
-      setServices(storageService.getServices());
-      setMessages(storageService.getMessages());
-      const creds = storageService.getAdminCreds();
+      setDocs(docsData);
+      setServices(servicesData);
+      setMessages(messagesData);
       setNewUsername(creds.username);
       setNewPassword(creds.password);
     } catch (error) {
       console.error('Error loading admin data:', error);
-      // Fallback
-      setDocs(storageService.getDocuments());
-      setServices(storageService.getServices());
-      setMessages(storageService.getMessages());
-      const creds = storageService.getAdminCreds();
-      setNewUsername(creds.username);
-      setNewPassword(creds.password);
+      // Fallback to empty
+      setDocs([]);
+      setServices([]);
+      setMessages([]);
+      setNewUsername('admin');
+      setNewPassword('admin123');
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const creds = storageService.getAdminCreds();
+    const creds = await storageService.getAdminCreds();
     if (username === creds.username && password === creds.password) {
       setIsLoggedIn(true);
       sessionStorage.setItem('admin_session', 'active');
-      refreshData();
+      await refreshData();
       setError('');
     } else {
       setError('İstifadəçi adı və ya şifrə yanlışdır!');
@@ -119,52 +90,52 @@ const AdminPage: React.FC = () => {
     sessionStorage.removeItem('admin_session');
   };
 
-  const handleUpdateCreds = (e: React.FormEvent) => {
+  const handleUpdateCreds = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUsername || !newPassword) return;
-    storageService.updateAdminCreds({ username: newUsername, password: newPassword });
+    await storageService.updateAdminCreds({ username: newUsername, password: newPassword });
     setSuccess('Giriş məlumatları yeniləndi!');
     setTimeout(() => setSuccess(''), 3000);
   };
 
   // Inbox Handlers
-  const openMessage = (msg: ContactMessage) => {
+  const openMessage = async (msg: ContactMessage) => {
     setSelectedMessage(msg);
     if (msg.status === MessageStatus.UNREAD) {
-      storageService.updateMessageStatus(msg.id, MessageStatus.READ);
-      refreshData();
+      await storageService.updateMessageStatus(msg.id, MessageStatus.READ);
+      await refreshData();
     }
   };
 
-  const handleDeleteMessage = (id: string) => {
+  const handleDeleteMessage = async (id: string) => {
     if (window.confirm('Bu mesajı silmək istəyirsiniz?')) {
-      storageService.deleteMessage(id);
+      await storageService.deleteMessage(id);
       setSelectedMessage(null);
-      refreshData();
+      await refreshData();
     }
   };
 
-  const handleReplyMessage = (msg: ContactMessage) => {
-    storageService.updateMessageStatus(msg.id, MessageStatus.REPLIED);
-    refreshData();
+  const handleReplyMessage = async (msg: ContactMessage) => {
+    await storageService.updateMessageStatus(msg.id, MessageStatus.REPLIED);
+    await refreshData();
     window.location.href = `mailto:${msg.email}?subject=Re: ${msg.subject}&body=Salam ${msg.name},%0D%0A%0D%0A`;
   };
 
-  const handleDocSubmit = (e: React.FormEvent) => {
+  const handleDocSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !imageUrl) return;
 
     if (editingDoc) {
-      storageService.updateDocument(editingDoc.id, { title, description, imageUrl, category });
+      await storageService.updateDocument(editingDoc.id, { title, description, imageUrl, category });
       setSuccess('Sənəd yeniləndi!');
       setEditingDoc(null);
       setActiveTab('manage');
     } else {
-      storageService.addDocument({ title, description, imageUrl, category });
+      await storageService.addDocument({ title, description, imageUrl, category });
       setSuccess('Yeni sənəd əlavə edildi!');
     }
 
-    refreshData();
+    await refreshData();
     setTitle('');
     setDescription('');
     setImageUrl('');
@@ -172,14 +143,14 @@ const AdminPage: React.FC = () => {
     setTimeout(() => setSuccess(''), 3000);
   };
 
-  const handleServiceSubmit = (e: React.FormEvent) => {
+  const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sTitle || !sDescription || !sImageUrl) return;
 
     const highlightsArray = sHighlights.split(',').map(h => h.trim()).filter(h => h !== '');
 
     if (editingService) {
-      storageService.updateService(editingService.id, {
+      await storageService.updateService(editingService.id, {
         title: sTitle,
         description: sDescription,
         imageUrl: sImageUrl,
@@ -188,7 +159,7 @@ const AdminPage: React.FC = () => {
       setSuccess('Xidmət yeniləndi!');
       setEditingService(null);
     } else {
-      storageService.addService({
+      await storageService.addService({
         title: sTitle,
         description: sDescription,
         imageUrl: sImageUrl,
@@ -197,7 +168,7 @@ const AdminPage: React.FC = () => {
       setSuccess('Yeni xidmət əlavə edildi!');
     }
 
-    refreshData();
+    await refreshData();
     setSTitle('');
     setSDescription('');
     setSImageUrl('');
@@ -223,9 +194,9 @@ const AdminPage: React.FC = () => {
     setActiveTab('services');
   };
 
-  const updateDocStatus = (id: string, status: ItemStatus) => {
-    storageService.setStatus(id, status);
-    refreshData();
+  const updateDocStatus = async (id: string, status: ItemStatus) => {
+    await storageService.setStatus(id, status);
+    await refreshData();
   };
 
   const hardDeleteDoc = (id: string) => {

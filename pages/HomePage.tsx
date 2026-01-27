@@ -31,31 +31,23 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load initial data from static files
+        // Load data from Firestore
+        const [docsData, servicesData] = await Promise.all([
+          storageService.getVisibleDocuments(),
+          storageService.getServices()
+        ]);
+
+        setDocs(docsData);
+        setServices(servicesData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        // Fallback to initial data
         const [initialDocs, initialServices] = await Promise.all([
           storageService.loadInitialDocuments(),
           storageService.loadInitialServices()
         ]);
-
-        // Get any user-added data from localStorage
-        const localDocs = storageService.getVisibleDocuments();
-        const localServices = storageService.getServices();
-
-        // Merge initial data with localStorage data (localStorage takes precedence for user additions)
-        const allDocs = [...initialDocs, ...localDocs].filter((doc, index, self) =>
-          index === self.findIndex(d => d.id === doc.id)
-        );
-        const allServices = [...initialServices, ...localServices].filter((service, index, self) =>
-          index === self.findIndex(s => s.id === service.id)
-        );
-
-        setDocs(allDocs);
-        setServices(allServices);
-      } catch (error) {
-        console.error('Error loading data:', error);
-        // Fallback to localStorage only
-        setDocs(storageService.getVisibleDocuments());
-        setServices(storageService.getServices());
+        setDocs(initialDocs);
+        setServices(initialServices);
       }
     };
 

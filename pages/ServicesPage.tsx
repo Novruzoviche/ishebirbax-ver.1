@@ -9,22 +9,14 @@ const ServicesPage: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load initial data from static files
-        const initialServices = await storageService.loadInitialServices();
-
-        // Get any user-added data from localStorage
-        const localServices = storageService.getServices();
-
-        // Merge initial data with localStorage data
-        const allServices = [...initialServices, ...localServices].filter((service, index, self) =>
-          index === self.findIndex(s => s.id === service.id)
-        );
-
-        setServices(allServices);
+        // Load services from Firestore
+        const servicesData = await storageService.getServices();
+        setServices(servicesData);
       } catch (error) {
         console.error('Error loading services:', error);
-        // Fallback to localStorage only
-        setServices(storageService.getServices());
+        // Fallback to initial data
+        const initialServices = await storageService.loadInitialServices();
+        setServices(initialServices);
       }
     };
 

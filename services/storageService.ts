@@ -1,16 +1,18 @@
 
 import { DocumentItem, Category, ItemStatus, ServiceItem, ContactMessage, MessageStatus } from '../types';
+import { db } from '../firebase';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, orderBy } from 'firebase/firestore';
 
-const DOCS_STORAGE_KEY = 'ise_bir_bax_docs_v2';
-const SERVICES_STORAGE_KEY = 'ise_bir_bax_services_v1';
-const MESSAGES_STORAGE_KEY = 'ise_bir_bax_messages_v1';
-const ADMIN_CREDS_KEY = 'ise_bir_bax_admin_creds_v1';
+const DOCS_COLLECTION = 'documents';
+const SERVICES_COLLECTION = 'services';
+const MESSAGES_COLLECTION = 'messages';
+const ADMIN_COLLECTION = 'admin';
 
 // Cache for initial data
 let initialDocumentsCache: DocumentItem[] | null = null;
 let initialServicesCache: ServiceItem[] | null = null;
 
-// Load initial data from static files
+// Load initial data from static files (for fallback)
 const loadInitialDocuments = async (): Promise<DocumentItem[]> => {
   try {
     const response = await fetch('/initial-documents.json');
@@ -56,137 +58,121 @@ const getInitialServices = async (): Promise<ServiceItem[]> => {
 
 export const storageService = {
   // Admin Credentials
-  getAdminCreds: () => {
-    const data = localStorage.getItem(ADMIN_CREDS_KEY);
-    return data ? JSON.parse(data) : { username: 'admin', password: 'admin123' };
+  getAdminCreds: async (): Promise<{ username: string; password: string }> => {
+    try {
+      const adminDoc = await getDocs(collection(db, ADMIN_COLLECTION));
+      if (!adminDoc.empty) {
+        const data = adminDoc.docs[0].data();
+        return { username: data.username || 'admin', password: data.password || 'admin123' };
+      }
+      return { username: 'admin', password: 'admin123' };
+    } catch (error) {
+      console.error('Error getting admin creds:', error);
+      return { username: 'admin', password: 'admin123' };
+    }
   },
 
-  updateAdminCreds: (creds: { username: string; password: string }) => {
-    localStorage.setItem(ADMIN_CREDS_KEY, JSON.stringify(creds));
+  updateAdminCreds: async (creds: { username: string; password: string }): Promise<void> => {
+    try {
+      const adminRef = doc(db, ADMIN_COLLECTION, 'creds');
+      await updateDoc(adminRef, creds);
+    } catch (error) {
+      console.error('Error updating admin creds:', error);
+    }
   },
 
   // Document Management
-  getDocuments: (): DocumentItem[] => {
+  getDocuments: async (): Promise<DocumentItem[]> => {
     try {
-      let data = localStorage.getItem(DOCS_STORAGE_KEY);
-      if (!data) {
-        // Check for old storage key and migrate
-        const oldKey = 'ise_bir_bax_docs';
-        const oldData = localStorage.getItem(oldKey);
-        if (oldData) {
-          try {
-            const parsedOldData = JSON.parse(oldData);
-            // Migrate to new key
-            localStorage.setItem(DOCS_STORAGE_KEY, oldData);
-            localStorage.removeItem(oldKey);
-            return parsedOldData;
-          } catch (e) {
-            // If old data is corrupted, fall back to initial
-          }
+      const q = query(collection(db, DOCS_COLLECTION), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const docs: DocumentItem[] = [];
+      querySnapshot.forEach((doc) => {
+        docs.push({ id: doc.id, ...doc.data() } as DocumentItem);
+      });
+      if (docs.length === 0) {
+        // Load initial data if empty
+        const initial = await getInitialDocuments();
+        for (const item of initial) {
+          await addDoc(collection(db, DOCS_COLLECTION), item);
         }
-        // No data found, try to load from static file synchronously
-        // For now, return empty array and let components handle loading
-        // This will be improved with proper async handling
-        return [];
+        return initial;
       }
-      const parsedData = JSON.parse(data);
-      // Ensure all documents have required fields
-      const validData = parsedData.filter((doc: any) =>
-        doc && typeof doc === 'object' && doc.id && doc.title && doc.imageUrl
-      );
-      if (validData.length !== parsedData.length) {
-        // If some documents are invalid, save the valid ones
-        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(validData));
-        return validData;
-      }
-      return parsedData;
-    } catch (e) {
-      // If any error occurs, reset to initial
-      return [];
+      return docs;
+    } catch (error) {
+      console.error('Error getting documents:', error);
+      return await getInitialDocuments();
     }
   },
 
-  getVisibleDocuments: (): DocumentItem[] => {
-    return storageService.getDocuments().filter(d => d.status === ItemStatus.VISIBLE);
+  getVisibleDocuments: async (): Promise<DocumentItem[]> => {
+    const docs = await storageService.getDocuments();
+    return docs.filter(d => d.status === ItemStatus.VISIBLE);
   },
 
-  addDocument: (doc: Omit<DocumentItem, 'id' | 'createdAt' | 'status'>): DocumentItem => {
-    const docs = storageService.getDocuments();
-    const newDoc: DocumentItem = {
-      ...doc,
-      id: Math.random().toString(36).substr(2, 9),
+  addDocument: async (docData: Omit<DocumentItem, 'id' | 'createdAt' | 'status'>): Promise<DocumentItem> => {
+    const newDoc: Omit<DocumentItem, 'id'> = {
+      ...docData,
       status: ItemStatus.VISIBLE,
       createdAt: Date.now()
     };
-    const updated = [newDoc, ...docs];
-    localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(updated));
-    return newDoc;
+    const docRef = await addDoc(collection(db, DOCS_COLLECTION), newDoc);
+    return { id: docRef.id, ...newDoc };
   },
 
-  updateDocument: (id: string, updates: Partial<DocumentItem>): void => {
-    const docs = storageService.getDocuments();
-    const updated = docs.map(d => d.id === id ? { ...d, ...updates } : d);
-    localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(updated));
+  updateDocument: async (id: string, updates: Partial<DocumentItem>): Promise<void> => {
+    const docRef = doc(db, DOCS_COLLECTION, id);
+    await updateDoc(docRef, updates);
   },
 
-  setStatus: (id: string, status: ItemStatus): void => {
-    storageService.updateDocument(id, { status });
+  setStatus: async (id: string, status: ItemStatus): Promise<void> => {
+    await storageService.updateDocument(id, { status });
   },
 
-  hardDeleteDocument: (id: string): void => {
-    const docs = storageService.getDocuments();
-    const updated = docs.filter(d => d.id !== id);
-    localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(updated));
+  hardDeleteDocument: async (id: string): Promise<void> => {
+    await deleteDoc(doc(db, DOCS_COLLECTION, id));
   },
 
   // Service Management
-  getServices: (): ServiceItem[] => {
+  getServices: async (): Promise<ServiceItem[]> => {
     try {
-      const data = localStorage.getItem(SERVICES_STORAGE_KEY);
-      if (!data) {
-        // No data found, return empty array for now
-        // Initial data will be loaded asynchronously by components
-        return [];
+      const q = query(collection(db, SERVICES_COLLECTION), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const services: ServiceItem[] = [];
+      querySnapshot.forEach((doc) => {
+        services.push({ id: doc.id, ...doc.data() } as ServiceItem);
+      });
+      if (services.length === 0) {
+        // Load initial data if empty
+        const initial = await getInitialServices();
+        for (const item of initial) {
+          await addDoc(collection(db, SERVICES_COLLECTION), item);
+        }
+        return initial;
       }
-      const parsedData = JSON.parse(data);
-      // Ensure all services have required fields
-      const validData = parsedData.filter((service: any) =>
-        service && typeof service === 'object' && service.id && service.title && service.description && service.imageUrl
-      );
-      if (validData.length !== parsedData.length) {
-        // If some services are invalid, save the valid ones
-        localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(validData));
-        return validData;
-      }
-      return parsedData;
-    } catch (e) {
-      // If any error occurs, return empty array
-      return [];
+      return services;
+    } catch (error) {
+      console.error('Error getting services:', error);
+      return await getInitialServices();
     }
   },
 
-  addService: (service: Omit<ServiceItem, 'id' | 'createdAt'>): ServiceItem => {
-    const services = storageService.getServices();
-    const newService: ServiceItem = {
-      ...service,
-      id: Math.random().toString(36).substr(2, 9),
+  addService: async (serviceData: Omit<ServiceItem, 'id' | 'createdAt'>): Promise<ServiceItem> => {
+    const newService: Omit<ServiceItem, 'id'> = {
+      ...serviceData,
       createdAt: Date.now()
     };
-    const updated = [newService, ...services];
-    localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(updated));
-    return newService;
+    const docRef = await addDoc(collection(db, SERVICES_COLLECTION), newService);
+    return { id: docRef.id, ...newService };
   },
 
-  updateService: (id: string, updates: Partial<ServiceItem>): void => {
-    const services = storageService.getServices();
-    const updated = services.map(s => s.id === id ? { ...s, ...updates } : s);
-    localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(updated));
+  updateService: async (id: string, updates: Partial<ServiceItem>): Promise<void> => {
+    const docRef = doc(db, SERVICES_COLLECTION, id);
+    await updateDoc(docRef, updates);
   },
 
-  deleteService: (id: string): void => {
-    const services = storageService.getServices();
-    const updated = services.filter(s => s.id !== id);
-    localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(updated));
+  deleteService: async (id: string): Promise<void> => {
+    await deleteDoc(doc(db, SERVICES_COLLECTION, id));
   },
 
   // Async methods for loading initial data
@@ -199,31 +185,36 @@ export const storageService = {
   },
 
   // Message Management
-  getMessages: (): ContactMessage[] => {
-    const data = localStorage.getItem(MESSAGES_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+  getMessages: async (): Promise<ContactMessage[]> => {
+    try {
+      const q = query(collection(db, MESSAGES_COLLECTION), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const messages: ContactMessage[] = [];
+      querySnapshot.forEach((doc) => {
+        messages.push({ id: doc.id, ...doc.data() } as ContactMessage);
+      });
+      return messages;
+    } catch (error) {
+      console.error('Error getting messages:', error);
+      return [];
+    }
   },
 
-  addMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>): void => {
-    const messages = storageService.getMessages();
-    const newMessage: ContactMessage = {
+  addMessage: async (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>): Promise<void> => {
+    const newMessage: Omit<ContactMessage, 'id'> = {
       ...msg,
-      id: Math.random().toString(36).substr(2, 9),
       status: MessageStatus.UNREAD,
       createdAt: Date.now()
     };
-    localStorage.setItem(MESSAGES_STORAGE_KEY, JSON.stringify([newMessage, ...messages]));
+    await addDoc(collection(db, MESSAGES_COLLECTION), newMessage);
   },
 
-  updateMessageStatus: (id: string, status: MessageStatus): void => {
-    const messages = storageService.getMessages();
-    const updated = messages.map(m => m.id === id ? { ...m, status } : m);
-    localStorage.setItem(MESSAGES_STORAGE_KEY, JSON.stringify(updated));
+  updateMessageStatus: async (id: string, status: MessageStatus): Promise<void> => {
+    const docRef = doc(db, MESSAGES_COLLECTION, id);
+    await updateDoc(docRef, { status });
   },
 
-  deleteMessage: (id: string): void => {
-    const messages = storageService.getMessages();
-    const updated = messages.filter(m => m.id !== id);
-    localStorage.setItem(MESSAGES_STORAGE_KEY, JSON.stringify(updated));
+  deleteMessage: async (id: string): Promise<void> => {
+    await deleteDoc(doc(db, MESSAGES_COLLECTION, id));
   }
 };
