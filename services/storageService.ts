@@ -96,7 +96,7 @@ export const storageService = {
         const addedDocs: DocumentItem[] = [];
         for (const item of initial) {
           const docRef = await addDoc(collection(db, DOCS_COLLECTION), item);
-          addedDocs.push({ id: docRef.id, ...item });
+          addedDocs.push({ ...item, id: docRef.id });
         }
         return addedDocs;
       }
@@ -150,7 +150,7 @@ export const storageService = {
         const addedServices: ServiceItem[] = [];
         for (const item of initial) {
           const docRef = await addDoc(collection(db, SERVICES_COLLECTION), item);
-          addedServices.push({ id: docRef.id, ...item });
+          addedServices.push({ ...item, id: docRef.id });
         }
         return addedServices;
       }
