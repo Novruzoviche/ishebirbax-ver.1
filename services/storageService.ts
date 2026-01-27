@@ -1,7 +1,7 @@
 
 import { DocumentItem, Category, ItemStatus, ServiceItem, ContactMessage, MessageStatus } from '../types';
 import { db } from '../firebase';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, orderBy, setDoc } from 'firebase/firestore';
 
 const DOCS_COLLECTION = 'documents';
 const SERVICES_COLLECTION = 'services';
@@ -95,8 +95,8 @@ export const storageService = {
         const initial = await getInitialDocuments();
         const addedDocs: DocumentItem[] = [];
         for (const item of initial) {
-          const docRef = await addDoc(collection(db, DOCS_COLLECTION), item);
-          addedDocs.push({ ...item, id: docRef.id });
+          await setDoc(doc(db, DOCS_COLLECTION, item.id), item);
+          addedDocs.push(item);
         }
         return addedDocs;
       }
@@ -149,8 +149,8 @@ export const storageService = {
         const initial = await getInitialServices();
         const addedServices: ServiceItem[] = [];
         for (const item of initial) {
-          const docRef = await addDoc(collection(db, SERVICES_COLLECTION), item);
-          addedServices.push({ ...item, id: docRef.id });
+          await setDoc(doc(db, SERVICES_COLLECTION, item.id), item);
+          addedServices.push(item);
         }
         return addedServices;
       }
