@@ -93,10 +93,12 @@ export const storageService = {
       if (docs.length === 0) {
         // Load initial data if empty
         const initial = await getInitialDocuments();
+        const addedDocs: DocumentItem[] = [];
         for (const item of initial) {
-          await addDoc(collection(db, DOCS_COLLECTION), item);
+          const docRef = await addDoc(collection(db, DOCS_COLLECTION), item);
+          addedDocs.push({ id: docRef.id, ...item });
         }
-        return initial;
+        return addedDocs;
       }
       return docs;
     } catch (error) {
@@ -145,10 +147,12 @@ export const storageService = {
       if (services.length === 0) {
         // Load initial data if empty
         const initial = await getInitialServices();
+        const addedServices: ServiceItem[] = [];
         for (const item of initial) {
-          await addDoc(collection(db, SERVICES_COLLECTION), item);
+          const docRef = await addDoc(collection(db, SERVICES_COLLECTION), item);
+          addedServices.push({ id: docRef.id, ...item });
         }
-        return initial;
+        return addedServices;
       }
       return services;
     } catch (error) {
