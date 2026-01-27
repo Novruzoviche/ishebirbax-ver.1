@@ -213,17 +213,17 @@ const AdminPage: React.FC = () => {
     await refreshData();
   };
 
-  const hardDeleteDoc = (id: string) => {
+  const hardDeleteDoc = async (id: string) => {
     if (window.confirm('Bu sənədi tamamilə silmək istəyirsiniz?')) {
-      storageService.hardDeleteDocument(id);
-      refreshData();
+      await storageService.hardDeleteDocument(id);
+      await refreshData();
     }
   };
 
-  const deleteService = (id: string) => {
+  const deleteService = async (id: string) => {
     if (window.confirm('Bu xidməti silmək istəyirsiniz?')) {
-      storageService.deleteService(id);
-      refreshData();
+      await storageService.deleteService(id);
+      await refreshData();
     }
   };
 
