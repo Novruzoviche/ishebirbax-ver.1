@@ -98,7 +98,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
         {/* Profil Xülasəsi */}
         <section className="mb-12">
           <h2 className="text-xl font-bold text-gray-800 uppercase tracking-widest mb-4 flex items-center gap-3">
-            <span className="w-8 h-1 bg-blue-600 rounded"></span> Profil Xülasəsi
+            <span className="w-8 h-1 bg-blue-600 rounded"></span> Haqqımda
           </h2>
           <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
             {data.personalInfo.summary}
