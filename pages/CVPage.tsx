@@ -80,7 +80,7 @@ const CVPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-20 pt-20">
       {/* Başlıq */}
-      <header className="bg-white border-b sticky top-20 z-50 no-print">
+      <header className="bg-white border-b sticky top-16 z-50 no-print">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 p-2 rounded-lg text-white">

@@ -82,7 +82,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
         </div>
 
         {/* Hobbilər Bölməsi */}
-        <div>
+        <div className="mb-10">
           <h3 className="text-sm font-bold uppercase tracking-widest border-b border-white/20 pb-2 mb-4">Hobbilər</h3>
           <div className="flex flex-wrap gap-2">
             {data.hobbies.map((hobby) => (
