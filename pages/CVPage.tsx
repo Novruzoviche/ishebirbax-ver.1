@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
 import { INITIAL_DATA } from '../constants';
@@ -12,11 +14,68 @@ const CVPage: React.FC = () => {
 
   const handleExport = () => {
     setIsExporting(true);
-    setTimeout(() => {
-      window.print();
-      setIsExporting(false);
-    }, 500);
-  };
+    const resumeElement = document.getElementById('resume-canvas');
+
+    if (resumeElement) {
+        const scaledParent = resumeElement.parentElement as HTMLElement | null;
+        const originalTransform = scaledParent ? scaledParent.style.transform : '';
+
+        if (scaledParent) {
+            scaledParent.style.transform = 'scale(1)';
+        }
+
+        setTimeout(() => {
+            html2canvas(resumeElement, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                windowWidth: resumeElement.scrollWidth,
+                windowHeight: resumeElement.scrollHeight,
+            }).then(canvas => {
+                if (scaledParent) {
+                    scaledParent.style.transform = originalTransform;
+                }
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const ratio = canvasWidth / canvasHeight;
+
+                const imgWidth = pdfWidth;
+                const imgHeight = imgWidth / ratio;
+
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+
+                while (heightLeft > 0) {
+                    position = position - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                }
+
+                pdf.save('resume.pdf');
+                setIsExporting(false);
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                if (scaledParent) {
+                    scaledParent.style.transform = originalTransform;
+                }
+                setIsExporting(false);
+            });
+        }, 150);
+    } else {
+        console.error("Resume element with id 'resume-canvas' not found.");
+        setIsExporting(false);
+    }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 pt-20">
@@ -55,10 +114,11 @@ const CVPage: React.FC = () => {
 
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-gray-800 transition shadow-lg active:scale-95"
+              disabled={isExporting}
+              className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-gray-800 transition shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download size={18} />
-              PDF olaraq Yüklə
+              {isExporting ? 'Hazırlanır...' : "PDF olaraq Yüklə"}
             </button>
           </div>
         </div>
