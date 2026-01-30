@@ -28,8 +28,8 @@ const CVPage: React.FC = () => {
               <Layout size={24} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 leading-tight">ProCV Qurucu</h1>
-              <p className="text-xs text-gray-500 font-medium">Professional A4 Dizayn Sistemi</p>
+              <h1 className="text-xl font-bold text-gray-900 leading-tight">Öz CV'ni Yarat</h1>
+              <p className="text-xs text-gray-500 font-medium">Professional CV Dizayn Sistemi</p>
             </div>
           </div>
 
@@ -58,7 +58,7 @@ const CVPage: React.FC = () => {
               className="flex items-center gap-2 bg-gray-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-gray-800 transition shadow-lg active:scale-95"
             >
               <Download size={18} />
-              PDF Çıxar
+              PDF olaraq Yüklə
             </button>
           </div>
         </div>
