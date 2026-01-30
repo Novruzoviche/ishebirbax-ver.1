@@ -18,6 +18,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
               src={data.personalInfo.profileImage || "https://picsum.photos/seed/placeholder/200/200"}
               alt="Profil"
               className="w-full h-full object-cover"
+              crossOrigin="anonymous"
             />
           </div>
           <h1 className="text-2xl font-bold text-center tracking-tight leading-tight">{data.personalInfo.fullName}</h1>
