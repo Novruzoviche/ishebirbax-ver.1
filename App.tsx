@@ -7,6 +7,7 @@ import ServicesPage from './pages/ServicesPage';
 import CategoryPage from './pages/CategoryPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
+import CVPage from './pages/CVPage';
 import { Category } from './types';
 
 const App: React.FC = () => {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/xidmetlerimiz" element={<ServicesPage />} />
+            <Route path="/cv" element={<CVPage />} />
             <Route path="/elaqe" element={<ContactPage />} />
             <Route 
               path="/diplomlar" 

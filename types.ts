@@ -49,3 +49,61 @@ export interface User {
   username: string;
   isLoggedIn: boolean;
 }
+
+// CV Types
+export interface Experience {
+  id: string;
+  company: string;
+  position: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+  current: boolean;
+}
+
+export interface Education {
+  id: string;
+  institution: string;
+  degree: string;
+  fieldOfStudy: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  proficiency: 'Başlanğıc' | 'Danışıq' | 'Sərbəst' | 'Ana dili';
+}
+
+export interface Hobby {
+  id: string;
+  name: string;
+}
+
+export interface ResumeData {
+  personalInfo: {
+    fullName: string;
+    jobTitle: string;
+    email: string;
+    phone: string;
+    address: string;
+    linkedin: string;
+    profileImage: string;
+    summary: string;
+  };
+  experiences: Experience[];
+  education: Education[];
+  skills: Skill[];
+  languages: Language[];
+  hobbies: Hobby[];
+}
+
+export type SectionType = 'personal' | 'experience' | 'education' | 'skills' | 'languages' | 'hobbies';
