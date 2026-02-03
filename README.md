@@ -11,7 +11,7 @@
 ### 🌐 Live Preview
 
 Layihənin canlı versiyasını buradan izləyə bilərsiniz:
-**[canlı veb-sayta keçid](https://ishabirbax.az)** *(Qeyd: Bu link aktiv deyilsə, development mərhələsindədir)*
+**[canlı veb-sayta keçid](https://isebirbax.web.app)**
 
 ---
 
@@ -21,11 +21,10 @@ Platformamız istifadəçilərə aşağıdakı imkanları təqdim edir:
 
 -   **📄 Dinamik CV Qurucu (Builder):** Məlumatlarınızı daxil edərək saniyələr içində peşəkar CV-lər yaradın.
 -   **🎨 Hazır CV Şablonları:** Fərqli dizaynlarda hazırlanmış şablonlardan birini seçərək CV-nizi fərdiləşdirin.
--   **📂 Xidmət Kateqoriyaları:** Karyera ilə bağlı müxtəlif xidmətləri (təlimlər, konsultasiyalar və s.) kəşf edin.
--   **🖼️ Sertifikat Qalereyası:** İstifadəçilərin uğurlarını və sənədlərini nümayiş etdirən bölmə.
+-   **📂 Xidmət Kateqoriyaları:** Karyera ilə bağlı müxtəlif xidmətləri (təlimlər, konsultasiyalar və s.) kəşf edin.---X
+-   **🖼️ Sertifikat Qalereyası:** İstifadəçilərin uğurlarını və sənədlərini nümayiş etdirən bölmə.---X
 -   **⚙️ Admin Panel:** Saytın məzmununu (xidmətlər, sənədlər, və s.) asanlıqla idarə etmək üçün xüsusi panel.
 -   **📱 Tam Responsive Dizayn:** Bütün cihazlarda (mobil, planşet, masaüstü) qüsursuz istifadəçi təcrübəsi.
--   **💬 WhatsApp ilə Canlı Əlaqə:** İstifadəçilərin suallarını anında cavablandırmaq üçün inteqrasiya edilmiş popup.
 -   **📻 Radio Pleyer:** Saytı ziyarət edərkən arxa fonda musiqi dinləmək üçün əlavə bir funksiya.
 
 ### 🛠️ Texnologiyalar (Tech Stack)
@@ -36,46 +35,12 @@ Layihənin hazırlanmasında aşağıdakı müasir texnologiyalardan istifadə o
 -   **Build Tool:** [Vite](https://vitejs.dev/)
 -   **Deployment & Backend:** [Firebase](https://firebase.google.com/) (Hosting, Storage, Firestore)
 -   **Styling:** CSS Modules, Təmiz CSS
+-   **Support from Aİ:** Google Aİ Studio, Copilot, Gemini Code
 
-### 📁 Layihə Qovluq Strukturu
-
-Layihənin əsas qovluq strukturu aşağıdakı kimidir:
-
-```
-ishebirbax-ver.1/
-├── App.tsx
-├── components/
-│   ├── DocCard.tsx
-│   ├── Header.tsx
-│   ├── Navbar.tsx
-│   ├── RadioPlayer.tsx
-│   ├── ResumeForm.tsx
-│   ├── ResumePreview.tsx
-│   └── WhatsAppPopup.tsx
-├── pages/
-│   ├── AdminPage.tsx
-│   ├── CategoryPage.tsx
-│   ├── CVPage.tsx
-│   └── HomePage.tsx
-├── services/
-│   └── storageService.ts
-├── public/
-│   ├── initial-documents.json
-│   └── initial-services.json
-├── firebase.ts
-├── package.json
-└── README.md
-```
-
-### 🖼️ Demo / Preview
-
-Layihənin ümumi görünüşü:
-
-![İşə Bir Bax Demo](https://via.placeholder.com/800x450.png?text=İşə+Bir+Bax+Veb-sayt+Görünüşü)
 
 ### 🎯 Layihənin Məqsədi və Vizyonu
 
-**Məqsəd:** İş axtarışı prosesində texniki bilikləri olmayan insanlar üçün belə peşəkar CV hazırlamağı asanlaşdırmaq. Karyera inkişafı üçün lazım olan resursları və xidmətləri bir mərkəzdən təqdim etmək.
+**Məqsəd:** İş axtarışı prosesində texniki bilikləri olmayan insanlar üçün belə peşəkar CV hazırlamağı asanlaşdırmaq. Karyera inkişafı üçün lazım olan resursları və xidmətləri bir mərkəzdən təqdim etmək və peşəkar çap xidmətləri.
 
 **Vizyon:** "İşə Bir Bax" platformasını Azərbaycanın aparıcı karyera portalına çevirmək, istifadəçilərə yalnız CV yaratmaq deyil, həm də iş elanları, təlimlər və karyera məsləhətləri kimi geniş imkanlar sunan bir ekosistem yaratmaq.
 
@@ -85,9 +50,7 @@ Analiz nəticəsində layihənin dayanıqlılığını və funksionallığını 
 
 -   [ ] **🔐 Təhlükəsiz Autentifikasiya:** Admin panel və istifadəçi profilləri üçün Firebase Authentication ilə güclü və təhlükəsiz giriş sistemi qurmaq.
 -   [ ] **✅ Testlərin Yazılması:** Layihənin dayanıqlılığını təmin etmək və gələcək dəyişikliklər zamanı yaranan xətaları minimuma endirmək üçün `Jest` və `React Testing Library` ilə unit və inteqrasiya testləri əlavə etmək.
--   [ ] **💾 Formada Avtomatik Yaddaş:** CV hazırlama prosesində istifadəçi təcrübəsini yaxşılaşdırmaq üçün daxil edilən məlumatların `localStorage` istifadə edilərək avtomatik yadda saxlanılması.
 -   [ ] **👤 İstifadəçi Profilləri:** Hər istifadəçinin öz CV-lərini saxlayıb redaktə edə biləcəyi şəxsi kabinet yaratmaq (Firestore istifadəsi ilə).
--   [ ] **📄 PDF Yükləmə Funksiyası:** Yaradılan CV-ləri birbaşa PDF formatında yükləmək üçün `jsPDF` və ya bənzəri bir kitabxana inteqrasiya etmək.
 -   [ ] **🌐 İş Elanları Modulu:** Şirkətlərin vakansiyalarını yerləşdirə biləcəyi və istifadəçilərin müraciət edə biləcəyi bir bölmə.
 
 
@@ -106,7 +69,7 @@ Hər bir töhfə bizim üçün dəyərlidir!
 ### 📞 Əlaqə
 
 Fikirləriniz, təklifləriniz və ya əməkdaşlıq üçün bizimlə əlaqə saxlaya bilərsiniz:
--   **Email:** [placeholder-email@example.com](mailto:placeholder-email@example.com)
+-   **Email:** [placeholder-email@example.com](mailto:snovruzov@outlook.com)
 
 ### 📜 Lisenziya
 
