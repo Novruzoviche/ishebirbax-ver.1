@@ -274,43 +274,43 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data, setData }) => {
         </div>
       </section>
 
-      {/* Dillər və Hobbilər */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section>
-          <SectionHeader icon={<Globe size={24} />} title="Dillər" />
-          <div className="space-y-2">
-            {data.languages.map(lang => (
-              <div key={lang.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded group">
-                <input className="bg-transparent border-none flex-grow" value={lang.name} onChange={(e) => setData({...data, languages: data.languages.map(l => l.id === lang.id ? {...l, name: e.target.value} : l)})}/>
-                <select
-                  className="bg-transparent border border-gray-200 rounded text-xs p-1"
-                  value={lang.proficiency}
-                  onChange={(e) => setData({...data, languages: data.languages.map(l => l.id === lang.id ? {...l, proficiency: e.target.value as any} : l)})}
-                >
-                  <option>Başlanğıc</option>
-                  <option>Danışıq</option>
-                  <option>Sərbəst</option>
-                  <option>Ana dili</option>
-                </select>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section>
-          <SectionHeader icon={<Heart size={24} />} title="Hobbilər" />
-          <div className="flex flex-wrap gap-2">
-            {data.hobbies.map(hobby => (
-              <div key={hobby.id} className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                <input
-                  className="bg-transparent border-none focus:outline-none w-auto min-w-[60px]"
-                  value={hobby.name}
-                  onChange={(e) => setData({...data, hobbies: data.hobbies.map(h => h.id === hobby.id ? {...h, name: e.target.value} : h)})}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+      {/* Dillər */}
+      <section>
+        <SectionHeader icon={<Globe size={24} />} title="Dillər" />
+        <div className="space-y-2">
+          {data.languages.map(lang => (
+            <div key={lang.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded group">
+              <input className="bg-transparent border-none flex-grow" value={lang.name} onChange={(e) => setData({...data, languages: data.languages.map(l => l.id === lang.id ? {...l, name: e.target.value} : l)})}/>
+              <select
+                className="bg-transparent border border-gray-200 rounded text-xs p-1"
+                value={lang.proficiency}
+                onChange={(e) => setData({...data, languages: data.languages.map(l => l.id === lang.id ? {...l, proficiency: e.target.value as any} : l)})}
+              >
+                <option>Başlanğıc</option>
+                <option>Danışıq</option>
+                <option>Sərbəst</option>
+                <option>Ana dili</option>
+              </select>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Hobbilər */}
+      <section>
+        <SectionHeader icon={<Heart size={24} />} title="Hobbilər" />
+        <div className="flex flex-wrap gap-2">
+          {data.hobbies.map(hobby => (
+            <div key={hobby.id} className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+              <input
+                className="bg-transparent border-none focus:outline-none w-auto min-w-[60px]"
+                value={hobby.name}
+                onChange={(e) => setData({...data, hobbies: data.hobbies.map(h => h.id === hobby.id ? {...h, name: e.target.value} : h)})}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

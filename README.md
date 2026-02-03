@@ -1,20 +1,113 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# İşə Bir Bax - Müasir Karyera Köməkçiniz
 
-# Run and deploy your AI Studio app
+[![Lisenziya: MIT](https://img.shields.io/badge/Lisenziya-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Texnologiyalar](https://img.shields.io/badge/Tech-React%20&%20TypeScript-blue.svg)](https://reactjs.org/)
+[![Deployment](https://img.shields.io/badge/Deployment-Firebase-orange.svg)](https://firebase.google.com/)
 
-This contains everything you need to run your app locally.
+### 🚀 Peşəkar və SEO-dostu Təsvir
 
-View your app in AI Studio: https://ai.studio/apps/drive/1UzqdXBICMZN7P4B76VT11W3K-uFs4fGB
+**İşə Bir Bax** Azərbaycandilli istifadəçilər üçün yaradılmış, müasir və funksional bir karyera platformasıdır. Bu layihə, iş axtaranların və karyerasını inkişaf etdirmək istəyənlərin ehtiyaclarını qarşılamaq üçün dizayn edilmişdir. Platformanın əsas məqsədi, bir neçə kliklə peşəkar və gözoxşayan CV-lər yaratmağı təmin etmək və istifadəçilərə karyera ilə bağlı müxtəlif xidmətləri bir arada təqdim etməkdir. CV hazırlama prosesini sadələşdirərək, hər kəs üçün bərabər imkanlar yaradırıq.
 
-## Run Locally
+### 🌐 Live Preview
 
-**Prerequisites:**  Node.js
+Layihənin canlı versiyasını buradan izləyə bilərsiniz:
+**[canlı veb-sayta keçid](https://ishabirbax.az)** *(Qeyd: Bu link aktiv deyilsə, development mərhələsindədir)*
+
+---
+
+### ✨ Funksiyalar
+
+Platformamız istifadəçilərə aşağıdakı imkanları təqdim edir:
+
+-   **📄 Dinamik CV Qurucu (Builder):** Məlumatlarınızı daxil edərək saniyələr içində peşəkar CV-lər yaradın.
+-   **🎨 Hazır CV Şablonları:** Fərqli dizaynlarda hazırlanmış şablonlardan birini seçərək CV-nizi fərdiləşdirin.
+-   **📂 Xidmət Kateqoriyaları:** Karyera ilə bağlı müxtəlif xidmətləri (təlimlər, konsultasiyalar və s.) kəşf edin.
+-   **🖼️ Sertifikat Qalereyası:** İstifadəçilərin uğurlarını və sənədlərini nümayiş etdirən bölmə.
+-   **⚙️ Admin Panel:** Saytın məzmununu (xidmətlər, sənədlər, və s.) asanlıqla idarə etmək üçün xüsusi panel.
+-   **📱 Tam Responsive Dizayn:** Bütün cihazlarda (mobil, planşet, masaüstü) qüsursuz istifadəçi təcrübəsi.
+-   **💬 WhatsApp ilə Canlı Əlaqə:** İstifadəçilərin suallarını anında cavablandırmaq üçün inteqrasiya edilmiş popup.
+-   **📻 Radio Pleyer:** Saytı ziyarət edərkən arxa fonda musiqi dinləmək üçün əlavə bir funksiya.
+
+### 🛠️ Texnologiyalar (Tech Stack)
+
+Layihənin hazırlanmasında aşağıdakı müasir texnologiyalardan istifadə olunub:
+
+-   **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
+-   **Build Tool:** [Vite](https://vitejs.dev/)
+-   **Deployment & Backend:** [Firebase](https://firebase.google.com/) (Hosting, Storage, Firestore)
+-   **Styling:** CSS Modules, Təmiz CSS
+
+### 📁 Layihə Qovluq Strukturu
+
+Layihənin əsas qovluq strukturu aşağıdakı kimidir:
+
+```
+ishebirbax-ver.1/
+├── App.tsx
+├── components/
+│   ├── DocCard.tsx
+│   ├── Header.tsx
+│   ├── Navbar.tsx
+│   ├── RadioPlayer.tsx
+│   ├── ResumeForm.tsx
+│   ├── ResumePreview.tsx
+│   └── WhatsAppPopup.tsx
+├── pages/
+│   ├── AdminPage.tsx
+│   ├── CategoryPage.tsx
+│   ├── CVPage.tsx
+│   └── HomePage.tsx
+├── services/
+│   └── storageService.ts
+├── public/
+│   ├── initial-documents.json
+│   └── initial-services.json
+├── firebase.ts
+├── package.json
+└── README.md
+```
+
+### 🖼️ Demo / Preview
+
+Layihənin ümumi görünüşü:
+
+![İşə Bir Bax Demo](https://via.placeholder.com/800x450.png?text=İşə+Bir+Bax+Veb-sayt+Görünüşü)
+
+### 🎯 Layihənin Məqsədi və Vizyonu
+
+**Məqsəd:** İş axtarışı prosesində texniki bilikləri olmayan insanlar üçün belə peşəkar CV hazırlamağı asanlaşdırmaq. Karyera inkişafı üçün lazım olan resursları və xidmətləri bir mərkəzdən təqdim etmək.
+
+**Vizyon:** "İşə Bir Bax" platformasını Azərbaycanın aparıcı karyera portalına çevirmək, istifadəçilərə yalnız CV yaratmaq deyil, həm də iş elanları, təlimlər və karyera məsləhətləri kimi geniş imkanlar sunan bir ekosistem yaratmaq.
+
+### 🗺️ Gələcək Planlar (Roadmap)
+
+Analiz nəticəsində layihənin dayanıqlılığını və funksionallığını artırmaq üçün aşağıdakı texniki və funksional təkmilləşdirmələr tövsiyə olunur:
+
+-   [ ] **🔐 Təhlükəsiz Autentifikasiya:** Admin panel və istifadəçi profilləri üçün Firebase Authentication ilə güclü və təhlükəsiz giriş sistemi qurmaq.
+-   [ ] **✅ Testlərin Yazılması:** Layihənin dayanıqlılığını təmin etmək və gələcək dəyişikliklər zamanı yaranan xətaları minimuma endirmək üçün `Jest` və `React Testing Library` ilə unit və inteqrasiya testləri əlavə etmək.
+-   [ ] **💾 Formada Avtomatik Yaddaş:** CV hazırlama prosesində istifadəçi təcrübəsini yaxşılaşdırmaq üçün daxil edilən məlumatların `localStorage` istifadə edilərək avtomatik yadda saxlanılması.
+-   [ ] **👤 İstifadəçi Profilləri:** Hər istifadəçinin öz CV-lərini saxlayıb redaktə edə biləcəyi şəxsi kabinet yaratmaq (Firestore istifadəsi ilə).
+-   [ ] **📄 PDF Yükləmə Funksiyası:** Yaradılan CV-ləri birbaşa PDF formatında yükləmək üçün `jsPDF` və ya bənzəri bir kitabxana inteqrasiya etmək.
+-   [ ] **🌐 İş Elanları Modulu:** Şirkətlərin vakansiyalarını yerləşdirə biləcəyi və istifadəçilərin müraciət edə biləcəyi bir bölmə.
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 🤝 Töfhə Vermə Qaydaları (Contributing)
+
+Bu layihə açıq mənbəlidir və hər kəsin töhfəsinə açıqdır. Layihəyə dəstək olmaq istəyirsinizsə, aşağıdakı addımları izləyə bilərsiniz:
+
+1.  **Fork** edin: Layihəni öz GitHub hesabınıza köçürün.
+2.  **Branch** yaradın: `git checkout -b xususiyyet/yeni-funksiya`
+3.  Dəyişikliklərinizi **Commit** edin: `git commit -m 'Yeni bir funksiya əlavə edildi'`
+4.  Branch-i **Push** edin: `git push origin xususiyyet/yeni-funksiya`
+5.  **Pull Request** yaradın.
+
+Hər bir töhfə bizim üçün dəyərlidir!
+
+### 📞 Əlaqə
+
+Fikirləriniz, təklifləriniz və ya əməkdaşlıq üçün bizimlə əlaqə saxlaya bilərsiniz:
+-   **Email:** [placeholder-email@example.com](mailto:placeholder-email@example.com)
+
+### 📜 Lisenziya
+
+Bu layihə **MIT Lisenziyası** ilə lisenziyalaşdırılmışdır. Detallı məlumat üçün `LICENSE` faylına nəzər sala bilərsiniz.
