@@ -69,7 +69,7 @@ Hər bir töhfə bizim üçün dəyərlidir!
 ### 📞 Əlaqə
 
 Fikirləriniz, təklifləriniz və ya əməkdaşlıq üçün bizimlə əlaqə saxlaya bilərsiniz:
--   **Email:** [placeholder-email@example.com](mailto:snovruzov@outlook.com)
+-   **Email:** [snovruzov@outlook.com](mailto:snovruzov@outlook.com)
 
 ### 📜 Lisenziya
 
