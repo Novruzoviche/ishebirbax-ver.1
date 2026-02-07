@@ -40,11 +40,6 @@ const CounterAnimation: React.FC = () => {
       <p className="text-2xl font-bold text-gray-800">
         24 saatda<span className="text-blue-600"> {count}+</span>CV yaradıldı
       </p>
-      {showSubtitle && (
-        <p className="text-sm text-gray-500 animate-fade-in">
-          İlk işinə bir addım
-        </p>
-      )}
     </div>
   );
 };
