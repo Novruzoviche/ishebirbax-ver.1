@@ -60,20 +60,18 @@ const DualCounter: React.FC = () => {
   }, [isIntersecting]);
 
   return (
-    <div ref={ref} className="text-center my-10">
+    <div ref={ref} className="text-center my-6">
       <div className="flex justify-center gap-12 md:gap-20">
         <div className="text-white">
-          <p className="text-5xl md:text-6xl font-extrabold">{counts[0]}+ Diplom</p>
+          <p className="text-5xl md:text-6xl font-extrabold">{counts[0]}+ <span className="text-lg md:text-xl opacity-90 font-light">Diplom</span></p>
         </div>
         <div className="text-white">
-          <p className="text-5xl md:text-6xl font-extrabold">{counts[1]}+ Dizayn</p>
+          <p className="text-5xl md:text-6xl font-extrabold">{counts[1]}+ <span className="text-lg md:text-xl opacity-90 font-light">Dizayn</span></p>
         </div>
       </div>
-      {showSubtitle && (
-        <p className="text-lg md:text-xl opacity-90 font-light mt-8 animate-fade-in">
+      <p className="text-lg md:text-xl opacity-90 font-light">
           Yüksək keyfiyyətli materiallar, rəsmi dizayn və sürətli icra
         </p>
-      )}
     </div>
   );
 };
