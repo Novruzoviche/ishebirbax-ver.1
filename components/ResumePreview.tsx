@@ -10,7 +10,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data }) => {
   return (
     <div className="bg-white shadow-2xl w-[210mm] min-h-[297mm] flex flex-row overflow-hidden" id="resume-canvas">
       {/* Sidebar - Tünd Arxa Fon */}
-      <aside className="w-[75mm] bg-[#1e293b] text-white p-8 flex flex-col h-full min-h-[297mm]">
+      <aside className="w-[75mm] bg-[#1e293b] text-white p-5 flex flex-col h-full min-h-[297mm]">
         {/* Profil Şəkli */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-32 h-32 rounded-full border-4 border-white/20 overflow-hidden mb-4 shadow-xl">

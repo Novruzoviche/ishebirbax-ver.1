@@ -6,6 +6,7 @@ import ResumePreview from '../components/ResumePreview';
 import { INITIAL_DATA } from '../constants';
 import { ResumeData } from '../types';
 import { Download, FileText, Layout, Eye } from 'lucide-react';
+import CounterAnimation from '../components/CounterAnimation';
 
 const CVPage: React.FC = () => {
   const [data, setData] = useState<ResumeData>(INITIAL_DATA);
@@ -90,6 +91,10 @@ const CVPage: React.FC = () => {
               <h1 className="text-xl font-bold text-gray-900 leading-tight">Öz CV'ni Yarat</h1>
               <p className="text-xs text-gray-500 font-medium">Professional CV Dizayn Sistemi</p>
             </div>
+          </div>
+
+          <div className="hidden lg:flex flex-grow justify-center">
+            <CounterAnimation />
           </div>
 
           <div className="flex items-center gap-4">
