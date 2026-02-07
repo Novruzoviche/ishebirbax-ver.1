@@ -1,5 +1,6 @@
 
 import React from 'react';
+import DualCounter from './DualCounter';
 
 const Header: React.FC = () => {
   return (
@@ -8,9 +9,7 @@ const Header: React.FC = () => {
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 animate-fade-in">
           Peşəkar Xidmət, Sizin üçün!
         </h1>
-        <p className="text-lg md:text-xl opacity-90 font-light mb-8">
-          Yüksək keyfiyyətli materiallar, rəsmi dizayn və sürətli icra
-        </p>
+        <DualCounter />
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <a href="https://wa.me/994771718614" className="bg-white text-blue-700 px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-50 transition-all">
             Dayanma, Bizə yaz!
