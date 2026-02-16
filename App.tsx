@@ -9,7 +9,6 @@ import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
 import CVPage from './pages/CVPage';
 import { Category } from './types';
-import WhatsAppPopup from './components/WhatsAppPopup';
 
 const App: React.FC = () => {
   return (
