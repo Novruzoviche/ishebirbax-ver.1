@@ -69,7 +69,7 @@ const DualCounter: React.FC = () => {
           <p className="text-5xl md:text-6xl font-extrabold">{counts[1]}+ <span className="text-lg md:text-xl opacity-90 font-light">Dizayn</span></p>
         </div>
       </div>
-      <p className="text-lg md:text-xl opacity-90 font-light">
+      <p className="text-lg md:text-xl p-4 opacity-90 font-light">
           Yüksək keyfiyyətli materiallar, rəsmi dizayn və sürətli icra
         </p>
     </div>
