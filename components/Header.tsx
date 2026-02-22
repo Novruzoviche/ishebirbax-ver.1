@@ -11,7 +11,7 @@ const Header: React.FC = () => {
         </h1>
         <DualCounter />
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <a href="https://wa.me/994771718614" className="bg-white text-blue-700 px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-50 transition-all">
+          <a href="https://wa.me/994771718614" className="bg-white text-blue-700 px-2 py-1 rounded-full font-semibold shadow-lg hover:bg-blue-50 transition-all">
             Dayanma, Bizə yaz!
           </a>
         </div>
