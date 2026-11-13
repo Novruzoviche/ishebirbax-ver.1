@@ -38,7 +38,7 @@ export const INITIAL_DATA: ResumeData = {
       id: "1",
       institution: "Azərbaycan Dövlət Rəssamlıq Akademiyası",
       degree: "Bakalavr",
-      fieldOfStudy: "Qrafik Dizayn",
+      fieldOfStudy: "",
       startDate: "2012",
       endDate: "2016",
       description: ""
