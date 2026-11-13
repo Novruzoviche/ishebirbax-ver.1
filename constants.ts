@@ -41,7 +41,7 @@ export const INITIAL_DATA: ResumeData = {
       fieldOfStudy: "Qrafik Dizayn",
       startDate: "2012",
       endDate: "2016",
-      description: "Tipografiya və rəqəmsal qarşılıqlı əlaqəyə fokuslanmışam."
+      description: ""
     }
   ],
   skills: [
